@@ -1,0 +1,32 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="../css/transform.css">
+		
+		<style>
+			.shape{
+				width: 300px;
+				height: 250px;
+				background-color: #B2D237;
+				color: #123456;
+			}
+		</style>
+		
+		<script src="../js/jquery-1.7.2.js"></script>
+		<script src="../js/Matrix.js"></script>
+		<script src="../js/jquery.freetrans.js"></script>
+	</head>
+	<body>
+		<div id="one" class="shape trans"></div>
+		<img id="two" src="./assets/bandit!.png" class="trans" width="400" height="267"></img>
+		
+		<script>
+		$(function(){
+			// do a selector group
+			$('.trans').freetrans();
+			
+			// updating options, chainable
+			$('#two').freetrans({x: 200, y: 100}).css({border: "1px solid pink"});
+		})
+		</script>
+	</body>
+</html>
