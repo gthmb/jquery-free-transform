@@ -2,7 +2,7 @@
 	
 	// consts
 	var rad = Math.PI/180;
-	
+
 	// public methods
 	var methods = {
 		init : function(options) {
@@ -129,12 +129,14 @@
 			
 			var data = sel.data('freetrans'),
 			cen = _getBounds(data.divs.controls).center,
-			curang = Math.atan2(evt.pageY - cen.y, evt.pageX - cen.x) * 180 / Math.PI;
-			
+			pressang = Math.atan2(evt.pageY - cen.y, evt.pageX - cen.x) * 180 / Math.PI;
+			rot = data.angle;
+
 			var drag = function(evt) {
-				var ang = Math.atan2(evt.pageY - cen.y, evt.pageX - cen.x) * 180 / Math.PI;
-				data.angle += ang - curang;
-				curang = ang;
+				var ang = Math.atan2(evt.pageY - cen.y, evt.pageX - cen.x) * 180 / Math.PI,
+				d = rot + ang - pressang;
+				if(evt.shiftKey) d = (d/15>>0) * 15;
+				data.angle = d;
 				_draw(sel);
 			};
 			
