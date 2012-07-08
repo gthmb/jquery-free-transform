@@ -3,7 +3,7 @@ jquery-free-transform-
 
 provides simple controls that allows you to move/rotate/scale a div. kinda like a simple version of the free transform tool in Flash or Photoshop.
 
-[example page](http://greenethumb.com/github/jquery-free-transform/example/)
+[example page](http://jsfiddle.net/gthmb/66Bna/)
 
 Dependancies:
   - jQuery - tested with 1.7.2
