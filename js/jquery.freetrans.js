@@ -82,7 +82,7 @@
 			scalex: 1,
 			scaley: 1, 
 			angle: 0,
-			'rot-origin': '50% 100%',
+			'rot-origin': '50% 50%',
 			divs: {}
 		}, options);
 		
