@@ -1,4 +1,4 @@
-jquery-free-transform-
+jquery-free-transform
 ======================
 
 provides simple controls that allows you to move/rotate/scale a div. kinda like a simple version of the free transform tool in Flash or Photoshop.
@@ -11,7 +11,7 @@ Dependancies:
 
 TODOs:
   - handle control placement for negative scaling
-  - handle rotation point other than center point
+  - <strike>handle rotation point other than center point</strike>
   - test in IE :)
 
 ... more later ....
