@@ -24,7 +24,7 @@
 		
 		getBounds : function() {
 			if(this.length > 1) {
-				$.error('Method jQuery.freetransable.getBounds can only be called on single selectors!');
+				$.error('Method jQuery.freetrans.getBounds can only be called on single selectors!');
 			}
 			return _getBounds(this);
 		},
@@ -170,6 +170,10 @@
 			tr_off = tr.offset(),
 			br_off = br.offset(),
 			bl_off = bl.offset(),
+			tc_off = tc.offset(),
+			bc_off = bc.offset(),
+			ml_off = ml.offset(),
+			mr_off = mr.offset(),
 			refang = Math.atan2(tr_off.top - tl_off.top, tr_off.left - tl_off.left),
 			sin = Math.sin(refang), 
 			cos = Math.cos(refang);
@@ -256,10 +260,33 @@
 				if (scaleMe) {
 					scaleMe(Point(evt.pageX, evt.pageY));
 					
-					if(evt.shiftKey && !handle.hasClass('ft-scaler-center') && !handle.hasClass('ft-scaler-mid')) {
-						var w = owid*data.scalex;
-						var nh = w*(1/ratio);
-						data.scaley = nh/ohgt;
+					if(evt.shiftKey) {
+						if(!handle.hasClass('ft-scaler-center')) {
+							data.scaley = ((owid*data.scalex)*(1/ratio))/ohgt;
+							
+							if(handle.is(ml)) {
+							 	positionMe = function() {
+									doPosition(mr_off, container.find('.ft-scaler-mr').offset());
+								};
+							} else if (handle.is(mr)) {
+								positionMe = function() {
+									doPosition(ml_off, container.find('.ft-scaler-ml').offset());
+								};
+							}
+
+						} else {
+							data.scalex = ((ohgt*data.scaley)*ratio)/owid;
+							if(handle.is(tc)) {
+								positionMe = function() {
+									doPosition(bc_off, container.find('.ft-scaler-bc').offset());
+								};
+							} else {
+								positionMe = function() {
+									doPosition(tc_off, container.find('.ft-scaler-tc').offset());
+								};
+							}
+						}
+						
 					}
 					
 					_draw(sel);
