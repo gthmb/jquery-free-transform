@@ -11,7 +11,6 @@ Dependancies:
 
 TODOs:
   - handle control placement for negative scaling
-  - <strike>handle rotation point other than center point</strike>
   - test in IE :)
 
 ... more later ....
