@@ -12,7 +12,6 @@
 				if(d){
 					_setOptions(sel, options);
 					_draw(sel);
-					if(safari) _safari(sel);
 				} else {
 					_init(sel, options);
 					_draw(sel);
@@ -57,7 +56,15 @@
 		
 		// wrap an ft-container around the selector
 		sel.wrap('<div class="ft-container"></div>');
-		sel.css({top: 0, left: 0});
+		sel.css({
+			top: 0, 
+			left: 0,
+			"transform-style": 'preserve-3d',
+		    "-webkit-transform-style": 'preserve-3d',
+		    "-mos-transform-style": 'preserve-3d',
+		    "-o-transform-style": 'preserve-3d',
+		    "-ms-transform-style": 'preserve-3d'
+		});
 		
 		var container = sel.parent();
 		
@@ -139,8 +146,10 @@
 			var drag = function(evt) {
 				var ang = Math.atan2(evt.pageY - cen.y, evt.pageX - cen.x) * 180 / Math.PI,
 				d = rot + ang - pressang;
+
 				if(evt.shiftKey) d = (d/15>>0) * 15;
 				data.angle = d;
+
 				_draw(sel);
 			};
 			
@@ -296,7 +305,6 @@
 					}
 					
 					_draw(sel);
-					if(safari) _safari(sel);
 
 					if (positionMe) positionMe();
 				};
@@ -397,22 +405,12 @@
 		return pt;
 	}
 
-	/**
-	 * Safari needs to force re-render elements that are programmatically
-	 * updated via the setOptions method, and when scale is transformed
-	 * without any rotation :/ here we hide the elements, redraw, and then
-	 * show the elements.
-	 */
-	function _safari(sel) {
-		var dv = sel.data('freetrans').divs.controls, h = dv.height();
-		dv.css({display: 'none'})
-		sel.css({display: 'none'})
-		_draw(sel);
-		dv.css({display: ''})
-		sel.css({display: ''})
-	}
-
 	function _matrixToCSS(m) {
+		m.a = Number(m.a).toFixed(20);
+		m.b = Number(m.b).toFixed(20);
+		m.c = Number(m.c).toFixed(20);
+		m.d = Number(m.d).toFixed(20);
+
 		return "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.tx + "," + m.ty + ")";
 	}
 	
@@ -424,7 +422,7 @@
 		var divs = data.divs,
 		ctrls = divs.controls,
 		rot = divs.rotator,
-		radian = data.angle * rad,
+		radian = (data.angle) * rad,
 		x = data.x,
 		y = data.y,
 		sx = data.scalex,
@@ -465,7 +463,7 @@
 		});
 		
 		tstr = _matrixToCSS(mat);
-		
+
 		// rotate and position
 		sel.css({
 			position: 'absolute',
