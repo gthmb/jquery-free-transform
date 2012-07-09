@@ -96,3 +96,9 @@ If you want to remove the freetrans functionality from a selector, you can pass 
 While scaling, holding down the Shift key will maintain the aspect ratio of the div when scaling was start.
 
 While rotating, the shift key cause the rotation to snap to 15 degree increments.
+
+##### Chainability
+
+This plugin keeps chainability in tact. Chain away!
+
+	$('mydiv').freetrans().css({border: '1px solid blue'});
