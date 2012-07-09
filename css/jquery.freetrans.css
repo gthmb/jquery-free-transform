@@ -1,9 +1,5 @@
 .ft-container {
 	position: absolute;
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-o-user-select: none;
 }
 
 .ft-controls {
