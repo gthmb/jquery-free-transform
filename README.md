@@ -11,7 +11,9 @@ Dependancies:
 
 TODOs:
   - handle control placement for negative scaling
-  - test in IE :)
+  - figure out Safari rendering issues
+    - scaling just one axis causes the controls to be misplaced
+    - controls are misplaced at the initialization of a selector
 
 ### API
 
