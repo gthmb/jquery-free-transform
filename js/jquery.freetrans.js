@@ -102,9 +102,7 @@
 		settings.divs.container = container;
 		
 		sel.data('freetrans', settings);
-		
-		_draw(sel);
-		
+
 		// translate (aka move)
 		container.bind('mousedown.freetrans', function(evt) {
 			var data = sel.data('freetrans');
@@ -460,4 +458,6 @@
 			"-ms-transform": tstr
 		});
 	}
+
+	_draw(sel);
 })(jQuery);

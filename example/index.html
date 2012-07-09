@@ -21,7 +21,7 @@
 		<script src="../js/jquery.freetrans.js"></script>
 	</head>
 	<body>
-		<div id="one" class="shape trans"></div>
+		<!-- div id="one" class="shape trans"></div -->
 		<img id="two" src="./assets/bandit!.png" class="trans" width="400" height="267"></img>
 		<div id='bounds'></div>
 
@@ -31,7 +31,12 @@
 			$('.trans').freetrans();
 			
 			// updating options, chainable
-			$('#two').freetrans({x: 200, y: 100, angle: 45, 'rot-origin': "50% 100%"}).css({border: "1px solid pink"});
+			$('#two').freetrans({
+				x: 200, 
+				y: 100, 
+				angle: 45, 
+				'rot-origin': "50% 100%"
+			}).css({border: "1px solid pink"})
 
 				var b = $('#two').freetrans('getBounds');
 				console.log(b, b.xmin, b.ymax, b.center.x);
