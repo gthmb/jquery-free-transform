@@ -404,12 +404,12 @@
 	}
 
 	function _matrixToCSS(m) {
-		m.a = Number(m.a).toFixed(8);
-		m.b = Number(m.b).toFixed(8);
-		m.c = Number(m.c).toFixed(8);
-		m.d = Number(m.d).toFixed(8);
-		m.tx = Number(m.tx).toFixed(8);
-		m.ty = Number(m.ty).toFixed(8);
+		if(String(m.a).length > 8) m.a = Number(m.a).toFixed(8);
+		if(String(m.b).length > 8) m.b = Number(m.b).toFixed(8);
+		if(String(m.c).length > 8) m.c = Number(m.c).toFixed(8);
+		if(String(m.d).length > 8) m.d = Number(m.d).toFixed(8);
+		if(String(m.tx).length > 8) m.tx = Number(m.tx).toFixed(8);
+		if(String(m.ty).length > 8) m.ty = Number(m.ty).toFixed(8);
 
 		return "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.tx + "," + m.ty + ")";
 	}
@@ -463,7 +463,7 @@
 		});
 		
 		tstr = _matrixToCSS(mat);
-
+		
 		// rotate and position
 		sel.css({
 			position: 'absolute',
