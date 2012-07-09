@@ -2,16 +2,20 @@
 	
 	// consts
 	var rad = Math.PI/180;
+	var safari = $.browser.webkit && !window.chrome;
 
 	// public methods
 	var methods = {
 		init : function(options) {
 			return this.each(function() {
-				var sel = $(this);
-				if(sel.data('freetrans')){
+				var sel = $(this), d = sel.data('freetrans');
+				if(d){
 					_setOptions(sel, options);
+					_draw(sel);
+					if(safari) _safari(sel);
 				} else {
 					_init(sel, options);
+					_draw(sel);
 				}
 			});
 		},
@@ -262,6 +266,8 @@
 				if (scaleMe) {
 					scaleMe(Point(evt.pageX, evt.pageY));
 					
+					if(safari) _safari(sel)
+
 					if(evt.shiftKey) {
 						if(!handle.hasClass('ft-scaler-center')) {
 							data.scaley = ((owid*data.scalex)*(1/ratio))/ohgt;
@@ -356,8 +362,6 @@
 		
 		data = $.extend(data, opts);
 		data.divs = divs;
-		
-		_draw(sel);
 	}
 	
 	function _rotatePoint(pt, sin, cos) {
@@ -394,6 +398,21 @@
 		return pt;
 	}
 
+	/**
+	 * Safari needs to force re-render elements that are programmatically
+	 * updated via the setOptions method, and when scale is transformed
+	 * without any rotation :/ here we hide the elements, redraw, and then
+	 * show the elements.
+	 */
+	function _safari(sel) {
+		var dv = sel.data('freetrans').divs.controls, h = dv.height();
+		dv.css({display: 'none'})
+		sel.css({display: 'none'})
+		_draw(sel);
+		dv.css({display: ''})
+		sel.css({display: ''})
+	}
+
 	function _matrixToCSS(m) {
 		return "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.tx + "," + m.ty + ")";
 	}
@@ -413,13 +432,15 @@
 		sy = data.scaley,
 		ror = data['rot-origin'];
 		mat = Matrix().rotate(radian, _getRotationPoint(sel)).scale(sx, sy),
-		tstr = _matrixToCSS(Matrix().rotate(radian));
+		tstr = _matrixToCSS(Matrix().rotate(radian)),
+		w = sel.width(),
+		h = sel.height()
 
 		ctrls.css({
-			top: y + sel.height() * (1 - sy),
-			left: x + sel.width() * (1 - sx),
-			width: sel.width() * sx,
-			height: sel.height() * sy,
+			top: y + h * (1 - sy),
+			left: x + w * (1 - sx),
+			width: w * sx,
+			height: h * sy,
 			"transform": tstr,
 			"-webkit-transform": tstr,
 			"-moz-transform": tstr,
@@ -431,7 +452,7 @@
 			"-o-transform-origin": ror,
 			"-ms-transform-origin": ror
 		});
-		
+
 		tstr = _matrixToCSS(Matrix().rotate(-radian));
 		
 		rot.css({
@@ -449,8 +470,8 @@
 		// rotate and position
 		sel.css({
 			position: 'absolute',
-			top: y + sel.height() * (1 - sy) / 2,
-			left: x + sel.width() * (1 - sx) / 2,
+			top: y + h * (1 - sy) / 2,
+			left: x + w * (1 - sx) / 2,
 			"transform": tstr,
 			"-webkit-transform": tstr,
 			"-moz-transform": tstr,
@@ -458,6 +479,4 @@
 			"-ms-transform": tstr
 		});
 	}
-
-	_draw(sel);
 })(jQuery);
