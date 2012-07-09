@@ -3,6 +3,14 @@
 		<link rel="stylesheet" href="../css/jquery.freetrans.css">
 		
 		<style>
+			body{
+				user-select: none;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-o-user-select: none;
+				-ms-user-select: none;
+			}
+
 			.shape{
 				width: 300px;
 				height: 250px;
@@ -21,32 +29,36 @@
 		<script src="../js/jquery.freetrans.js"></script>
 	</head>
 	<body>
-		<!-- div id="one" class="shape trans"></div -->
-		<img id="two" src="./assets/bandit!.png" class="trans" width="400" height="267"></img>
 		<div id='bounds'></div>
+		<div id="one" class="shape trans" width="300" height="250"></div>
+		<img id="two" src="./assets/bandit!.png" class="trans" width="400" height="267"></img>
 
 		<script>
 		$(function(){
 			// do a selector group
-			$('.trans').freetrans();
+			$('.trans').freetrans({
+				x: 50, 
+				y: 50
+			});
 			
-			// updating options, chainable
+			//updating options, chainable
 			$('#two').freetrans({
 				x: 200, 
 				y: 100, 
-				angle: 45, 
-				'rot-origin': "50% 100%"
-			}).css({border: "1px solid pink"})
+				angle: 45,
+				'rot-origin': "50% 100%"  
+			})
+			.css({border: "1px solid pink"})
 
-				var b = $('#two').freetrans('getBounds');
-				console.log(b, b.xmin, b.ymax, b.center.x);
+			var b = $('#two').freetrans('getBounds');
+			console.log(b, b.xmin, b.ymax, b.center.x);
 
-				// $('#bounds').css({
-				// 	top: b.ymin,
-				// 	left: b.xmin,
-				// 	width: b.width,
-				// 	height: b.height
-				// })
+			$('#bounds').css({
+				top: b.ymin,
+				left: b.xmin,
+				width: b.width,
+				height: b.height
+			})
 		})
 		</script>
 	</body>
