@@ -56,16 +56,8 @@
 		
 		// wrap an ft-container around the selector
 		sel.wrap('<div class="ft-container"></div>');
-		sel.css({
-			top: 0, 
-			left: 0,
-			"transform-style": 'preserve-3d',
-		    "-webkit-transform-style": 'preserve-3d',
-		    "-mos-transform-style": 'preserve-3d',
-		    "-o-transform-style": 'preserve-3d',
-		    "-ms-transform-style": 'preserve-3d'
-		});
-		
+		sel.css({top: 0, left: 0});
+
 		var container = sel.parent();
 		
 		// generate all the controls markup
@@ -113,6 +105,12 @@
 		settings.divs.container = container;
 		
 		sel.data('freetrans', settings);
+
+		if(safari) {
+			var css = {"-webkit-transform-style": 'preserve-3d'} 
+			controls.css(css);
+			sel.css(css);
+		}
 
 		// translate (aka move)
 		container.bind('mousedown.freetrans', function(evt) {
@@ -406,10 +404,12 @@
 	}
 
 	function _matrixToCSS(m) {
-		m.a = Number(m.a).toFixed(20);
-		m.b = Number(m.b).toFixed(20);
-		m.c = Number(m.c).toFixed(20);
-		m.d = Number(m.d).toFixed(20);
+		m.a = Number(m.a).toFixed(8);
+		m.b = Number(m.b).toFixed(8);
+		m.c = Number(m.c).toFixed(8);
+		m.d = Number(m.d).toFixed(8);
+		m.tx = Number(m.tx).toFixed(8);
+		m.ty = Number(m.ty).toFixed(8);
 
 		return "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.tx + "," + m.ty + ")";
 	}
