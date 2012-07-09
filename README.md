@@ -15,7 +15,7 @@ TODOs:
 
 ### API
 
-The $.freetrans() method is used for all access to the plugin. 
+The <code>$.freetrans()</code> method is used for all access to the plugin. 
 
 ##### Initialization
 When called without any parameters, the plugin will be initiailized for the selector(s)
