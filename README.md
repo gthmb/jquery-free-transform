@@ -63,6 +63,15 @@ The options and properties for a selector are stored in the <code>$.data('freetr
 
 The <code>'rot-origin'</code> property is a string formatted just like the 'transform-origin' property in CSS. Like CSS, it defaults to <code>'50% 50%'</code>, which means 50% of the width and 50% of the height, eg, the center point. The first value in the string describes the x location, the second describes the y location. Passing in a single value will apply the same value to both the x and the y location. If you'd prefer to use pixel offsets and not percentages, just leave the '%' off the values. <code>'150 100'</code> will make the rotation origin point {x: 150px, y: 100px}.
 
+	// rotate around the bottom center
+	$('mydiv').freetrans({'rot-origin': '50% 100%'});
+
+	// rotate around the top left
+	$('mydiv').freetrans({'rot-origin': '0'});
+
+	// rotate around the point 100px to the left and 25% down the selector
+	$('mydiv').freetrans({'rot-origin': '100 25%'});
+
 
 ##### Showing/Hiding the controls
 
@@ -76,7 +85,7 @@ You can show and hide the controls by passing 'controls' to the plugin folloed b
 
 
 ##### Destroying the plugin
-If you want to remove the freetrans functionality from a selector, you can pass 'destroy'. It will unbind any events, and destroy the data('freetrans') object. 
+If you want to remove the freetrans functionality from a selector, you can pass 'destroy'. It will unbind any events, and destroy the <code>$.data('freetrans')</code> object. 
 
 	// hide the controls
 	$('mydiv').freetrans('destroy');
