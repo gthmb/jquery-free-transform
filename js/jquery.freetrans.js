@@ -265,8 +265,6 @@
 				
 				if (scaleMe) {
 					scaleMe(Point(evt.pageX, evt.pageY));
-					
-					if(safari) _safari(sel)
 
 					if(evt.shiftKey) {
 						if(!handle.hasClass('ft-scaler-center')) {
@@ -298,7 +296,8 @@
 					}
 					
 					_draw(sel);
-					
+					if(safari) _safari(sel);
+
 					if (positionMe) positionMe();
 				};
 			};
