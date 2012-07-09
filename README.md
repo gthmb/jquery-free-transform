@@ -11,9 +11,6 @@ Dependancies:
 
 TODOs:
   - handle control placement for negative scaling
-  - figure out Safari rendering issues
-    - scaling just one axis causes the controls to be misplaced
-    - controls are misplaced at the initialization of a selector
 
 ### API
 
@@ -112,3 +109,7 @@ While rotating, the Shift key causes the rotation to snap to 15 degree increment
 This plugin keeps chainability in tact. Chain away!
 
 	$('mydiv').freetrans().css({border: '1px solid blue'});
+	
+##### Safari
+
+There seems to be a rendering issue with Safari, so I added a function that forces the elements to be repainted when running in Safari.
