@@ -89,3 +89,12 @@ If you want to remove the freetrans functionality from a selector, you can pass 
 
 	// hide the controls
 	$('mydiv').freetrans('destroy');
+
+Usage Notes
+===========
+
+##### The SHIFT key
+
+While scaling, holding down the Shift key will maintain the aspect ratio of the div when scaling was start.
+
+While rotating, the shift key cause the rotation to snap to 15 degree increments.
