@@ -33,7 +33,7 @@ You can also initialize a div with options like so:
 	$('mydiv').freetrans({
 			x: 100,
 			y: 150,
-			rotation: 45
+			angle: 45
 	})
 
 ##### Updating options and values
@@ -47,7 +47,7 @@ After a div has been initialized, you can pass in an object to update any option
 	$('mydiv').freetrans({
 			x: 100,
 			y: 150,
-			rotation: 45
+			angle: 45
 	})
 
 
@@ -82,6 +82,14 @@ You can show and hide the controls by passing 'controls' to the plugin folloed b
 	// show the controls
 	$('mydiv').freetrans('controls', true);
 
+
+
+##### Getting the bounding box
+
+You can retrieve the bounding box of the transformed selector by passing 'getBounds'. This method is only available for single selectors, not groups. It returns an object with the bounds information. This method is not chainable.
+
+	var b = $('mydiv').getBounds();
+	console.log(b.xmin, b.ymax, b.height, b.center.x);
 
 ##### Destroying the plugin
 If you want to remove the freetrans functionality from a selector, you can pass 'destroy'. It will unbind any events, and destroy the <code>$.data('freetrans')</code> object. 

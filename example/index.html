@@ -9,6 +9,11 @@
 				background-color: #B2D237;
 				color: #123456;
 			}
+
+			#bounds {
+				position: absolute;
+				border: 1px solid red;
+			}
 		</style>
 		
 		<script src="../js/jquery-1.7.2.js"></script>
@@ -18,14 +23,25 @@
 	<body>
 		<div id="one" class="shape trans"></div>
 		<img id="two" src="./assets/bandit!.png" class="trans" width="400" height="267"></img>
-		
+		<div id='bounds'></div>
+
 		<script>
 		$(function(){
 			// do a selector group
 			$('.trans').freetrans();
 			
 			// updating options, chainable
-			$('#two').freetrans({x: 200, y: 100, 'rot-origin': "50% 100%"}).css({border: "1px solid pink"});
+			$('#two').freetrans({x: 200, y: 100, angle: 45, 'rot-origin': "50% 100%"}).css({border: "1px solid pink"});
+
+				var b = $('#two').freetrans('getBounds');
+				console.log(b, b.xmin, b.ymax, b.center.x);
+
+				// $('#bounds').css({
+				// 	top: b.ymin,
+				// 	left: b.xmin,
+				// 	width: b.width,
+				// 	height: b.height
+				// })
 		})
 		</script>
 	</body>

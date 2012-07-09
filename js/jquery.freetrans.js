@@ -26,7 +26,8 @@
 			if(this.length > 1) {
 				$.error('Method jQuery.freetrans.getBounds can only be called on single selectors!');
 			}
-			return _getBounds(this);
+			
+			return _getBounds(this.data('freetrans').divs.controls);
 		},
 		
 		controls: function(show) {
@@ -319,7 +320,6 @@
 	
 	function _getBounds(sel) {
 		var bnds = {};
-
 		sel.find('.ft-scaler').each(function(indx) {
 			var handle = $(this),
 			off = handle.offset(),
