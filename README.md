@@ -13,8 +13,7 @@ TODOs:
   - handle control placement for negative scaling
   - test in IE :)
 
-API
-===
+### API
 
 The $.freetrans() method is used for all access to the plugin. 
 
@@ -90,8 +89,7 @@ If you want to remove the freetrans functionality from a selector, you can pass 
 	// hide the controls
 	$('mydiv').freetrans('destroy');
 
-Usage Notes
-===========
+### Usage Notes
 
 ##### The SHIFT key
 
