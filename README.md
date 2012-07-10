@@ -14,7 +14,7 @@ TODOs:
 
 ### API
 
-The <code>$.freetrans()</code> method is used for all access to the plugin. 
+The `$.freetrans()` method is used for all access to the plugin. 
 
 ##### Initialization
 When called without any parameters, the plugin will be initiailized for the selector(s)
@@ -50,7 +50,7 @@ After a div has been initialized, you can pass in an object to update any option
 	})
 
 
-The options and properties for a selector are stored in the <code>$.data('freetrans')</code> object. The properties that are used to render the selector are:
+The options and properties for a selector are stored in the `$.data('freetrans')` object. The properties that are used to render the selector are:
 
 - `x`:Number (the x position of the selector)
 - `y`:Number (the y position of the selector)
@@ -59,7 +59,7 @@ The options and properties for a selector are stored in the <code>$.data('freetr
 - `angle`:Number (the angle (in degrees) of the rotation)
 - `'rot-origin'`:String (the location of rotation point),
 
-The <code>'rot-origin'</code> property is a string formatted just like the 'transform-origin' property in CSS. Like CSS, it defaults to <code>'50% 50%'</code>, which means 50% of the width and 50% of the height, eg, the center point. The first value in the string describes the x location, the second describes the y location. Passing in a single value will apply the same value to both the x and the y location. If you'd prefer to use pixel offsets and not percentages, just leave the '%' off the values. <code>'150 100'</code> will make the rotation origin point {x: 150px, y: 100px}.
+The `'rot-origin'` property is a string formatted just like the `'transform-origin'` property in CSS. Like CSS, it defaults to <code>'50% 50%'</code>, which means 50% of the width and 50% of the height, eg, the center point. The first value in the string describes the x location, the second describes the y location. Passing in a single value will apply the same value to both the x and the y location. If you'd prefer to use pixel offsets and not percentages, just leave the '%' off the values. <code>'150 100'</code> will make the rotation origin point {x: 150px, y: 100px}.
 
 	// rotate around the bottom center
 	$('mydiv').freetrans({'rot-origin': '50% 100%'});
@@ -73,7 +73,7 @@ The <code>'rot-origin'</code> property is a string formatted just like the 'tran
 
 ##### Showing/Hiding the controls
 
-You can show and hide the controls by passing 'controls' to the plugin folloed by a boolean to either show or hide the controls.
+You can show and hide the controls by passing `'controls'` to the plugin folloed by a boolean to either show or hide the controls.
 
 	// hide the controls
 	$('mydiv').freetrans('controls', false);
@@ -85,15 +85,15 @@ You can show and hide the controls by passing 'controls' to the plugin folloed b
 
 ##### Getting the bounding box
 
-You can retrieve the bounding box of the transformed selector by passing 'getBounds'. This method is only available for single selectors, not groups. It returns an object with the bounds information. This method is not chainable.
+You can retrieve the bounding box of the transformed selector by passing `'getBounds'`. This method is only available for single selectors, not groups. It returns an object with the bounds information. This method is not chainable.
 
 	var b = $('mydiv').getBounds();
 	console.log(b.xmin, b.ymax, b.height, b.center.x);
 
 ##### Destroying the plugin
-If you want to remove the freetrans functionality from a selector, you can pass 'destroy'. It will unbind any events, and destroy the <code>$.data('freetrans')</code> object. 
+If you want to remove the freetrans functionality from a selector, you can pass `'destroy'`. It will unbind any events, and destroy the `$.data('freetrans')` object. 
 
-	// hide the controls
+	// destroy plugin for mydiv
 	$('mydiv').freetrans('destroy');
 
 ### Usage Notes
