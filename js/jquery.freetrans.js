@@ -10,11 +10,11 @@
 			return this.each(function() {
 				var sel = $(this), d = sel.data('freetrans');
 				if(d){
-					_setOptions(sel, options);
-					_draw(sel);
+					_setOptions(d, options);
+					_draw(sel, d);
 				} else {
 					_init(sel, options);
-					_draw(sel);
+					_draw(sel, sel.data('freetrans'));
 				}
 			});
 		},
@@ -30,12 +30,14 @@
 				$.error('Method jQuery.freetrans.getBounds can only be called on single selectors!');
 			}
 			
-			return _getBounds(this.data('freetrans').divs.controls);
+			return _getBounds(this.data('freetrans')._p.divs.controls);
 		},
 		
 		controls: function(show) {
 			return this.each(function() {
-				_toggleControls($(this), show);
+				var sel = $(this), d = sel.data('freetrans');
+				if(!d) _init(sel);
+				_toggleControls(sel, show);
 			});
 		}
 	};
@@ -54,9 +56,12 @@
 	// private methods
 	function _init(sel, options){
 		
+		var off = sel.offset();
+
+		sel.css({top: 0, left: 0, position: 'static'});
+
 		// wrap an ft-container around the selector
 		sel.wrap('<div class="ft-container"></div>');
-		sel.css({top: 0, left: 0});
 
 		var container = sel.parent();
 		
@@ -64,7 +69,6 @@
 		var markup = '';
 		markup += 		'<div class="ft-controls">';
 		markup += 			'<div class="ft-rotator"></div>';
-		markup += 			'<div class="ft-bounds"></div>';
 		markup += 			'<div class="ft-scaler ft-scaler-top ft-scaler-left ft-scaler-tl"></div>';
 		markup += 			'<div class="ft-scaler ft-scaler-top ft-scaler-right ft-scaler-tr"></div>';
 		markup += 			'<div class="ft-scaler ft-scaler-bottom ft-scaler-right ft-scaler-br"></div>';
@@ -75,35 +79,41 @@
 		markup += 			'<div class="ft-scaler ft-scaler-mid ft-scaler-right ft-scaler-mr"></div>';
 		markup += 		'</div>';
 		
-		// append controls to container
-		container.append(markup);
-		
-		var off = sel.offset();
-		
 		var settings = $.extend( {
 			x: off.left,
 			y: off.top,
 			scalex: 1,
 			scaley: 1, 
-			angle: 0,
+			angle: (options && options.angle) ? options.angle : 0,
 			'rot-origin': '50% 50%',
-			divs: {}
+			_p: {
+				divs: {},
+				prev: {},
+				wid: sel.width(),
+				hgt: sel.height(),
+				rad: (options && options.angle) ? options.angle * rad : 0,
+				controls: true
+			}
 		}, options);
-		
+
+		// append controls to container
+		container.append(markup);
+
 		// store div references (locally in function and in settings)
-		var controls = settings.divs.controls = container.find('.ft-controls');
-		var rotator = settings.divs.rotator = container.find('.ft-rotator');
-		var bounds = settings.divs.bounds = container.find('.ft-bounds');
-		var tl = settings.divs.tl = container.find('.ft-scaler-tl');
-		var tr = settings.divs.tr = container.find('.ft-scaler-tr');
-		var br = settings.divs.br = container.find('.ft-scaler-br');
-		var bl = settings.divs.bl = container.find('.ft-scaler-bl');
-		var tc = settings.divs.tc = container.find('.ft-scaler-tc');
-		var bc = settings.divs.bc = container.find('.ft-scaler-bc');
-		var ml = settings.divs.ml = container.find('.ft-scaler-ml');
-		var mr = settings.divs.mr = container.find('.ft-scaler-mr');
-		settings.divs.container = container;
-		
+		var controls = settings._p.divs.controls = container.find('.ft-controls');
+		var rotator = settings._p.divs.rotator = container.find('.ft-rotator');
+		var tl = settings._p.divs.tl = container.find('.ft-scaler-tl');
+		var tr = settings._p.divs.tr = container.find('.ft-scaler-tr');
+		var br = settings._p.divs.br = container.find('.ft-scaler-br');
+		var bl = settings._p.divs.bl = container.find('.ft-scaler-bl');
+		var tc = settings._p.divs.tc = container.find('.ft-scaler-tc');
+		var bc = settings._p.divs.bc = container.find('.ft-scaler-bc');
+		var ml = settings._p.divs.ml = container.find('.ft-scaler-ml');
+		var mr = settings._p.divs.mr = container.find('.ft-scaler-mr');
+		settings._p.divs.container = container;
+		settings._p.cwid = controls.width();
+		settings._p.chgt = controls.height();
+
 		sel.data('freetrans', settings);
 
 		if(safari) {
@@ -120,7 +130,7 @@
 				data.x += evt.pageX - p.x;
 				data.y += evt.pageY - p.y;
 				p = Point(evt.pageX, evt.pageY);
-				_draw(sel);
+				_draw(sel, data);
 			};
 			
 			var up = function(evt) {
@@ -137,7 +147,7 @@
 			evt.stopPropagation();
 			
 			var data = sel.data('freetrans'),
-			cen = _getBounds(data.divs.controls).center,
+			cen = _getBounds(data._p.divs.controls).center,
 			pressang = Math.atan2(evt.pageY - cen.y, evt.pageX - cen.x) * 180 / Math.PI;
 			rot = data.angle;
 
@@ -147,8 +157,9 @@
 
 				if(evt.shiftKey) d = (d/15>>0) * 15;
 				data.angle = d;
+				data._p.rad = d*rad;
 
-				_draw(sel);
+				_draw(sel, data);
 			};
 			
 			var up = function(evt) {
@@ -194,7 +205,7 @@
 			doPosition = function(origOff, newOff) {
 				data.x += origOff.left - newOff.left;
 				data.y += origOff.top - newOff.top;
-				_draw(sel);
+				_draw(sel, data);
 			};
 			
 			if (handle.is(br) || handle.is(mr)) {
@@ -299,17 +310,19 @@
 								};
 							}
 						}
-						
 					}
 					
-					_draw(sel);
+					data._p.cwid = data._p.wid * data.scalex;
+					data._p.chgt = data._p.hgt * data.scaley;
+
+					_draw(sel, data);
 
 					if (positionMe) positionMe();
 				};
 			};
 			
 			var up = function(evt) {
-				_draw(sel);
+				_draw(sel, data);
 				$(document).unbind('mousemove.freetrans', drag);
 				$(document).unbind('mouseup.freetrans', up);
 			};
@@ -317,13 +330,15 @@
 			$(document).bind('mousemove.freetrans', drag);
 			$(document).bind('mouseup.freetrans', up);
 		});
+
+		sel.css({position: 'absolute'});
 	}
 	
 	function _destroy(sel) {
 		var data = sel.data('freetrans');
 		$(document).unbind('.freetrans');
-		for(var el in data.divs) data.divs[el].unbind('.freetrans');
-		data.divs.container.replaceWith(sel);
+		for(var el in data._p.divs) data._p.divs[el].unbind('.freetrans');
+		data._p.divs.container.replaceWith(sel);
 		sel.removeData('freetrans');
 	}
 	
@@ -356,17 +371,27 @@
 	}
 	
 	function _toggleControls(sel, show) {
-		sel.data('freetrans').divs.controls.css({
+		var d = sel.data('freetrans');
+		
+		if(show == d._p.controls) return;
+
+		d._p.divs.controls.css({
 			visibility: (show) ? 'visible' : 'hidden'
 		});
+		
+		d._p.controls = show;
+
+		if(show) _draw(sel, d)
 	}
 	
-	function _setOptions(sel, opts) {
-		var data = sel.data('freetrans'),
-		divs = data.divs;
-		
+	function _setOptions(data, opts) {
+		delete opts._p;
+
 		data = $.extend(data, opts);
-		data.divs = divs;
+
+		if(opts.angle) data._p.rad = opts.angle*rad;
+		if(opts.scalex) data._p.cwid = data._p.wid * data.scalex;
+		if(opts.scaley) data._p.chgt = data._p.hgt * data.scaley;
 	}
 	
 	function _rotatePoint(pt, sin, cos) {
@@ -378,7 +403,7 @@
 		ror = data['rot-origin'], 
 		pt = Point(0,0);
 		
-		if(!ror) return pt;
+		if(!ror || ror == "50% 50%") return pt;
 		
 		var arr = ror.split(' '), l = arr.length;
 		
@@ -386,8 +411,8 @@
 		
 		var val = parseInt(arr[0]), 
 		per = arr[0].indexOf('%') > -1,
-		ctrls = data.divs.controls,
-		dim = ctrls.width();
+		ctrls = data._p.divs.controls,
+		dim = data._p.cwid;
 
 		pt.x = ((per) ? val/100*dim : val) - dim/2;
 
@@ -396,7 +421,7 @@
 			val = arr[1];
 			per = val.indexOf('%') > -1;
 			val = parseInt(val);	
-			dim = ctrls.height();
+			dim = data._p.chgt;
 			pt.y = ((per) ? val/100*dim : val) - dim/2;		
 		}
 
@@ -414,66 +439,86 @@
 		return "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.tx + "," + m.ty + ")";
 	}
 	
-	function _draw(sel) {
-		var data = sel.data('freetrans');
-		
+	function _draw(sel, data) {		
 		if(!data) return;
 		
-		var divs = data.divs,
-		ctrls = divs.controls,
-		rot = divs.rotator,
-		radian = (data.angle) * rad,
-		x = data.x,
-		y = data.y,
-		sx = data.scalex,
-		sy = data.scaley,
-		ror = data['rot-origin'];
-		mat = Matrix().rotate(radian, _getRotationPoint(sel)).scale(sx, sy),
-		tstr = _matrixToCSS(Matrix().rotate(radian)),
-		w = sel.width(),
-		h = sel.height()
+		var tstr, css = {};
 
-		ctrls.css({
-			top: y + h * (1 - sy),
-			left: x + w * (1 - sx),
-			width: w * sx,
-			height: h * sy,
-			"transform": tstr,
-			"-webkit-transform": tstr,
-			"-moz-transform": tstr,
-			"-o-transform": tstr,
-			"-ms-transform": tstr,
-			"transform-origin": ror,
-			"-webkit-transform-origin": ror,
-			"-moz-transform-origin": ror,
-			"-o-transform-origin": ror,
-			"-ms-transform-origin": ror
-		});
+		if(data._p.controls) {
+			css = {
+				top: data.y + data._p.hgt * (1 - data.scaley),
+				left: data.x + data._p.wid * (1 - data.scalex),
+				width: data._p.cwid,
+				height: data._p.chgt,
+			}
 
-		tstr = _matrixToCSS(Matrix().rotate(-radian));
+			if(data.angle) {
+				tstr = _matrixToCSS(Matrix().rotate(data._p.rad));
+
+				css.transform = tstr;
+				css["-webkit-transform"] = tstr
+				css["-moz-transform"] = tstr;
+				css["-o-transform"] = tstr;
+				css["-ms-transform"] = tstr;
+				css["transform-origin"] = data['rot-origin'];
+				css["-webkit-transform-origin"] = data['rot-origin'];
+				css["-moz-transform-origin"] = data['rot-origin'];
+				css["-o-transform-origin"] = data['rot-origin'];
+				css["-ms-transform-origin"] = data['rot-origin'];
+			}
+
+			data._p.divs.controls.css(css);
+
+			css = {
+				top: -20,
+				left: data._p.cwid + 4,
+			}
+
+			if(data.angle) {
+				tstr = _matrixToCSS(Matrix().rotate(-data._p.rad));
+				css.transform = tstr;
+				css["-webkit-transform"] = tstr
+				css["-moz-transform"] = tstr;
+				css["-o-transform"] = tstr;
+				css["-ms-transform"] = tstr;
+			}
+
+			data._p.divs.rotator.css(css);
+		}
 		
-		rot.css({
-			top: -20,
-			left: ctrls.width() + 4,
-			"transform": tstr,
-			"-webkit-transform": tstr,
-			"-moz-transform": tstr,
-			"-o-transform": tstr,
-			"-ms-transform": tstr
-		});
+		css = {};
+
+		var t = (data.y + data._p.hgt * (1 - data.scaley) / 2) >> 0
+		l = (data.x + data._p.wid * (1 - data.scalex) / 2) >> 0,
+		c = false;
+
+		// need to move y?
+		if(t != data._p.prev.top) { c = true; css.top = t };
 		
-		tstr = _matrixToCSS(mat);
-		
-		// rotate and position
-		sel.css({
-			position: 'absolute',
-			top: y + h * (1 - sy) / 2,
-			left: x + w * (1 - sx) / 2,
-			"transform": tstr,
-			"-webkit-transform": tstr,
-			"-moz-transform": tstr,
-			"-o-transform": tstr,
-			"-ms-transform": tstr
-		});
+		// need to move x?
+		if(l != data._p.prev.left) { c = true; css.left = l};
+
+		// store current pos
+		data._p.prev.top = t;
+		data._p.prev.left = l;
+
+		// we need a transform
+		if( data.angle || data.scalex != 1 || data.scaley != 1 ) {
+			c = true;
+			
+			var mat = Matrix();
+
+			if(data.angle) mat = mat.rotate(data._p.rad, _getRotationPoint(sel));
+			if(data.scalex != 1 || data.scaley != 1) mat = mat.scale(data.scalex, data.scaley);
+
+			tstr = _matrixToCSS(mat)
+			css.transform = tstr;
+			css["-webkit-transform"] = tstr
+			css["-moz-transform"] = tstr;
+			css["-o-transform"] = tstr;
+			css["-ms-transform"] = tstr;
+		}
+
+		if(c) sel.css(css)
 	}
 })(jQuery);
