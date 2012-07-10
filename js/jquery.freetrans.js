@@ -452,7 +452,7 @@
 				height: data._p.chgt,
 			}
 
-			if(data.angle) {
+			if(data._p.prev.angle != data.angle) {
 				tstr = _matrixToCSS(Matrix().rotate(data._p.rad));
 
 				css.transform = tstr;
@@ -465,6 +465,8 @@
 				css["-moz-transform-origin"] = data['rot-origin'];
 				css["-o-transform-origin"] = data['rot-origin'];
 				css["-ms-transform-origin"] = data['rot-origin'];
+
+				data._p.prev.angle = data.angle;
 			}
 
 			data._p.divs.controls.css(css);
@@ -503,7 +505,7 @@
 		data._p.prev.left = l;
 
 		// we need a transform
-		if( data.angle || data.scalex != 1 || data.scaley != 1 ) {
+		if( data.angle || data.scalex != 1 || data.scaley != 1) {
 			c = true;
 			
 			var mat = Matrix();
@@ -512,11 +514,19 @@
 			if(data.scalex != 1 || data.scaley != 1) mat = mat.scale(data.scalex, data.scaley);
 
 			tstr = _matrixToCSS(mat)
+		} else {
+			tstr = "matrix(1,0,0,1,0,0)";
+		}
+
+		if (data._p.prev.mat != tstr) {
+			c = true;
 			css.transform = tstr;
 			css["-webkit-transform"] = tstr
 			css["-moz-transform"] = tstr;
 			css["-o-transform"] = tstr;
 			css["-ms-transform"] = tstr;
+
+			data._p.prev.mat = tstr;
 		}
 
 		if(c) sel.css(css)
