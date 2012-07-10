@@ -42,11 +42,6 @@
     left: 100%;
 }
 
-.ft-bounds {
-    position: absolute;
-    border: 1px dashed #ccc;
-}
-
 .ft-rotator{
     position: absolute;
     width: 16px;
