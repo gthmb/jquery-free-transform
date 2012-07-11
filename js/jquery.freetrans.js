@@ -78,13 +78,13 @@
 		markup += 			'<div class="ft-scaler ft-scaler-mid ft-scaler-left ft-scaler-ml"></div>';
 		markup += 			'<div class="ft-scaler ft-scaler-mid ft-scaler-right ft-scaler-mr"></div>';
 		markup += 		'</div>';
-		
-		var settings = $.extend( {
+
+		var settings = {
 			x: off.left,
 			y: off.top,
 			scalex: 1,
 			scaley: 1, 
-			angle: (options && options.angle) ? options.angle : 0,
+			angle: 0,
 			'rot-origin': '50% 50%',
 			_p: {
 				divs: {},
@@ -92,9 +92,29 @@
 				wid: sel.width(),
 				hgt: sel.height(),
 				rad: (options && options.angle) ? options.angle * rad : 0,
-				controls: true
+				controls: true,
+				dom: sel[0]
 			}
-		}, options);
+		};
+
+		var ua = navigator.userAgent;
+		
+		if( /webkit\//i.test(ua) ) {
+			settings._p.transcss = 'WebkitTransform';
+			settings._p.transorigcss = 'WebkitTransformOrigin';
+		} else if (/gecko\//i.test(ua)) {
+			settings._p.transcss = 'MozTransform';
+			settings._p.transorigcss = 'MozTransformOrigin';
+		} else if (/trident\//i.test(ua)) {
+			settings._p.transcss = 'msTransform';
+			settings._p.transorigcss = 'msTransformOrigin';
+		} else if (/presto\//i.test(ua)) {
+			settings._p.transcss = 'OTransform';
+			settings._p.transorigcss = 'OTransformOrigin';
+		} else {
+			settings._p.transcss = 'transform';
+			settings._p.transorigcss = 'transform-origin';
+		}
 
 		// append controls to container
 		container.append(markup);
@@ -116,10 +136,14 @@
 
 		sel.data('freetrans', settings);
 
+		if(options) {
+			_setOptions(sel.data('freetrans'), options);
+		}
+		
+
 		if(safari) {
-			var css = {"-webkit-transform-style": 'preserve-3d'} 
-			controls.css(css);
-			sel.css(css);
+			controls[0].style['-webkit-transform-style'] = 'preserve-3d';
+			sel[0].style['-webkit-transform-style'] = 'preserve-3d';
 		}
 
 		// translate (aka move)
@@ -149,13 +173,14 @@
 			var data = sel.data('freetrans'),
 			cen = _getBounds(data._p.divs.controls).center,
 			pressang = Math.atan2(evt.pageY - cen.y, evt.pageX - cen.x) * 180 / Math.PI;
-			rot = data.angle;
+			rot = Number(data.angle);
 
 			var drag = function(evt) {
 				var ang = Math.atan2(evt.pageY - cen.y, evt.pageX - cen.x) * 180 / Math.PI,
 				d = rot + ang - pressang;
 
 				if(evt.shiftKey) d = (d/15>>0) * 15;
+
 				data.angle = d;
 				data._p.rad = d*rad;
 
@@ -389,9 +414,9 @@
 
 		data = $.extend(data, opts);
 
-		if(opts.angle) data._p.rad = opts.angle*rad;
-		if(opts.scalex) data._p.cwid = data._p.wid * data.scalex;
-		if(opts.scaley) data._p.chgt = data._p.hgt * data.scaley;
+		if(opts.angle) data._p.rad = data.angle*rad;
+		if(opts.scalex) data._p.cwid = data._p.wid * opts.scalex;
+		if(opts.scaley) data._p.chgt = data._p.hgt * opts.scaley;
 	}
 	
 	function _rotatePoint(pt, sin, cos) {
@@ -442,93 +467,68 @@
 	function _draw(sel, data) {		
 		if(!data) return;
 		
-		var tstr, css = {};
+		var tstr, el;
 
+		// if showing controls... manipulate them
 		if(data._p.controls) {
-			css = {
-				top: data.y + data._p.hgt * (1 - data.scaley),
-				left: data.x + data._p.wid * (1 - data.scalex),
-				width: data._p.cwid,
-				height: data._p.chgt,
-			}
+			el = data._p.divs.controls[0];
+			el.style.top = data.y + data._p.hgt * (1 - data.scaley) + 'px';
+			el.style.left = data.x + data._p.wid * (1 - data.scalex) + 'px';
+			el.style.width = data._p.cwid + 'px';
+			el.style.height = data._p.chgt + 'px';
 
-			if(data._p.prev.angle != data.angle) {
+			if(data._p.prev.angle != data.angle || data._p.prev.controls != data._p.controls) {
 				tstr = _matrixToCSS(Matrix().rotate(data._p.rad));
+				el.style[data._p.transcss] = tstr;
+				el.style[data._p.transorigcss] = data['rot-origin'];
 
-				css.transform = tstr;
-				css["-webkit-transform"] = tstr
-				css["-moz-transform"] = tstr;
-				css["-o-transform"] = tstr;
-				css["-ms-transform"] = tstr;
-				css["transform-origin"] = data['rot-origin'];
-				css["-webkit-transform-origin"] = data['rot-origin'];
-				css["-moz-transform-origin"] = data['rot-origin'];
-				css["-o-transform-origin"] = data['rot-origin'];
-				css["-ms-transform-origin"] = data['rot-origin'];
-
-				data._p.prev.angle = data.angle;
-			}
-
-			data._p.divs.controls.css(css);
-
-			css = {
-				top: -20,
-				left: data._p.cwid + 4,
-			}
-
-			if(data.angle) {
 				tstr = _matrixToCSS(Matrix().rotate(-data._p.rad));
-				css.transform = tstr;
-				css["-webkit-transform"] = tstr
-				css["-moz-transform"] = tstr;
-				css["-o-transform"] = tstr;
-				css["-ms-transform"] = tstr;
+				data._p.divs.rotator[0].style[data._p.transcss] = tstr;
+				data._p.divs.rotator[0].style[data._p.transorigcss] = data['rot-origin'];
+
+				data._p.prev.controls = data._p.controls;
 			}
 
-			data._p.divs.rotator.css(css);
+			el = data._p.divs.rotator[0];
+				
+			el.style.top = -20 + 'px';
+			el.style.left = data._p.cwid + 4 + 'px';
+			el.style[data._p.transcss] = tstr;
+			el.style[data._p.transorigcss] = data['rot-origin'];
 		}
 		
-		css = {};
+		el = data._p.dom;
 
 		var t = (data.y + data._p.hgt * (1 - data.scaley) / 2) >> 0
-		l = (data.x + data._p.wid * (1 - data.scalex) / 2) >> 0,
-		c = false;
+		l = (data.x + data._p.wid * (1 - data.scalex) / 2) >> 0;
 
 		// need to move y?
-		if(t != data._p.prev.top) { c = true; css.top = t };
+		if(t != data._p.prev.top) el.style.top = t + 'px';
 		
 		// need to move x?
-		if(l != data._p.prev.left) { c = true; css.left = l};
+		if(l != data._p.prev.left) el.style.left = l + 'px';
 
 		// store current pos
 		data._p.prev.top = t;
 		data._p.prev.left = l;
 
 		// we need a transform
-		if( data.angle || data.scalex != 1 || data.scaley != 1) {
-			c = true;
-			
+		if(data.angle != data._p.prev.angle || data.scalex != 1 || data.scaley != 1) {
 			var mat = Matrix();
-
-			if(data.angle) mat = mat.rotate(data._p.rad, _getRotationPoint(sel));
+			if(data.angle){ 
+				mat = mat.rotate(data._p.rad, _getRotationPoint(sel));
+				data._p.prev.angle = data.angle;
+			}
 			if(data.scalex != 1 || data.scaley != 1) mat = mat.scale(data.scalex, data.scaley);
-
+			
 			tstr = _matrixToCSS(mat)
 		} else {
-			tstr = "matrix(1,0,0,1,0,0)";
+			tstr = "matrix(1,0,0,1,0,0);";
 		}
 
 		if (data._p.prev.mat != tstr) {
-			c = true;
-			css.transform = tstr;
-			css["-webkit-transform"] = tstr
-			css["-moz-transform"] = tstr;
-			css["-o-transform"] = tstr;
-			css["-ms-transform"] = tstr;
-
+			el.style[data._p.transcss] = tstr;
 			data._p.prev.mat = tstr;
 		}
-
-		if(c) sel.css(css)
 	}
 })(jQuery);
