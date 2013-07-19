@@ -85,6 +85,7 @@
 			scalex: 1,
 			scaley: 1, 
 			angle: 0,
+			scaleLimit: 0.1,
 			'rot-origin': '50% 50%',
 			_p: {
 				divs: {},
@@ -207,6 +208,8 @@
 			 * to reverse the angle.
 			 */
 			
+			var scaleLimit = settings.scaleLimit;
+
 			var anchor, scaleMe, doPosition, mp, doy, dox,
 			data = sel.data('freetrans'),
 			handle = $(evt.target),
@@ -240,8 +243,9 @@
 					mp.x -= anchor.left;
 					mp.y -= anchor.top;
 					mp = _rotatePoint(mp, sin, cos);
-					data.scalex = (mp.x / owid);
-					if (doy) data.scaley = mp.y / ohgt;
+
+					data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+					if (doy) data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
 				};
 				
 				positionMe = function() {
@@ -255,8 +259,9 @@
 					mp.x = anchor.left - mp.x;
 					mp.y = anchor.top - mp.y;
 					mp = _rotatePoint(mp, sin, cos);
-					data.scalex = mp.x / owid;
-					if (doy) data.scaley = mp.y / ohgt;
+
+					data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+					if (doy) data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
 				};
 				
 				positionMe = function() {
@@ -274,8 +279,8 @@
 					mp.x -= anchor.left;
 					mp.y = anchor.top - mp.y;
 					mp = _rotatePoint(mp, sin, cos);
-					if (dox) data.scalex = mp.x / owid;
-					data.scaley = mp.y / ohgt;
+					if (dox) data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+					data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
 				};
 				
 				positionMe = function() {
@@ -295,23 +300,23 @@
 					mp.x = anchor.left - mp.x;
 					mp.y -= anchor.top;
 					mp = _rotatePoint(mp, sin, cos);
-					if (dox) data.scalex = mp.x / owid;
-					data.scaley = mp.y / ohgt;
+					if (dox) data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+					data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
 				};
 				
 				positionMe = function() {
 					doPosition(anchor, container.find('.ft-scaler-tr').offset());
 				};
 			}
-			
-			var drag = function(evt) {
+
+			var drag = function(evt) {				
 				
 				if (scaleMe) {
 					scaleMe(Point(evt.pageX, evt.pageY));
 
 					if(evt.shiftKey) {
 						if(!handle.hasClass('ft-scaler-center')) {
-							data.scaley = ((owid*data.scalex)*(1/ratio))/ohgt;
+							data.scaley = ((owid*data.scalex)*(1/ratio))/ohgt;							
 							
 							if(handle.is(ml)) {
 							 	positionMe = function() {
@@ -339,7 +344,6 @@
 					
 					data._p.cwid = data._p.wid * data.scalex;
 					data._p.chgt = data._p.hgt * data.scaley;
-
 					_draw(sel, data);
 
 					if (positionMe) positionMe();
@@ -465,13 +469,15 @@
 	}
 	
 	function _draw(sel, data) {		
-		if(!data) return;
+		if(!data)
+			return;
 		
 		var tstr, el;
 
 		// if showing controls... manipulate them
 		if(data._p.controls) {
 			el = data._p.divs.controls[0];
+
 			el.style.top = data.y + data._p.hgt * (1 - data.scaley) + 'px';
 			el.style.left = data.x + data._p.wid * (1 - data.scalex) + 'px';
 			el.style.width = data._p.cwid + 'px';
