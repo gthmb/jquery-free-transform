@@ -5,7 +5,7 @@ Provides simple controls that allows you to move/rotate/scale a div. Kind of lik
 
 [example page](http://jsfiddle.net/gthmb/66Bna/1/)
 
-Dependancies:
+Dependencies:
   - jQuery - tested with 1.7.2
   - [Matrix.js](https://github.com/STRd6/matrix.js "awesome and simple Matrix lib from STRd6") - awesome and simple Matrix lib from STRd6
 
