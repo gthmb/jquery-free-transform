@@ -73,7 +73,9 @@
 		
 		var off = sel.offset();
 
-		sel.css({top: 0, left: 0, position: 'static'});
+		sel
+			.addClass('ft-widget')
+			.css({top: 0, left: 0, position: 'static'});
 
 		// wrap an ft-container around the selector
 		sel.wrap('<div class="ft-container"></div>');
@@ -136,12 +138,6 @@
 		if(options) {
 			_setOptions(sel.data('freetrans'), options);
 		}
-		
-
-		try {
-			controls[0].style['-webkit-transform-style'] = 'preserve-3d';
-			sel[0].style['-webkit-transform-style'] = 'preserve-3d';
-		} catch (err) {}
 
 		// translate (aka move)
 		container.bind('mousedown.freetrans', function(evt) {
