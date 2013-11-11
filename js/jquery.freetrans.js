@@ -2,7 +2,22 @@
 	
 	// consts
 	var rad = Math.PI/180;
-	var safari = $.browser.webkit && !window.chrome;
+	var vendorPrefix = (function() {
+		var prefix,
+			prefixes = {
+				webkit: 'Webkit',
+				gecko: 'Moz',
+				trident: 'ms',
+				presto: 'O'
+			};
+		$.each(prefixes, function(k, v) {
+			if (new RegExp(k + '/', 'i').test(navigator.userAgent)) {
+				prefix = v;
+				return false;
+			}
+		});
+		return prefix;
+	}());
 
 	// public methods
 	var methods = {
@@ -98,25 +113,6 @@
 			}
 		};
 
-		var ua = navigator.userAgent;
-		
-		if( /webkit\//i.test(ua) ) {
-			settings._p.transcss = 'WebkitTransform';
-			settings._p.transorigcss = 'WebkitTransformOrigin';
-		} else if (/gecko\//i.test(ua)) {
-			settings._p.transcss = 'MozTransform';
-			settings._p.transorigcss = 'MozTransformOrigin';
-		} else if (/trident\//i.test(ua)) {
-			settings._p.transcss = 'msTransform';
-			settings._p.transorigcss = 'msTransformOrigin';
-		} else if (/presto\//i.test(ua)) {
-			settings._p.transcss = 'OTransform';
-			settings._p.transorigcss = 'OTransformOrigin';
-		} else {
-			settings._p.transcss = 'transform';
-			settings._p.transorigcss = 'transform-origin';
-		}
-
 		// append controls to container
 		container.append(markup);
 
@@ -142,10 +138,10 @@
 		}
 		
 
-		if(safari) {
+		try {
 			controls[0].style['-webkit-transform-style'] = 'preserve-3d';
 			sel[0].style['-webkit-transform-style'] = 'preserve-3d';
-		}
+		} catch (err) {}
 
 		// translate (aka move)
 		container.bind('mousedown.freetrans', function(evt) {
@@ -398,7 +394,19 @@
 		
 		return bnds;
 	}
-	
+
+	function _createStyleSetter(prop) {
+		var prefixed;
+		if (vendorPrefix) {
+			prefixed = vendorPrefix + prop[0].toUpperCase() + prop.substr(1);
+			return function (el, value) { el.style[prefixed] = el.style[prop] = value; };
+		}
+		return function (el, value) { el.style[prop] = value; };
+	}
+	var _setTransform = _createStyleSetter('transform');
+	var _setTransformOrigin = _createStyleSetter('transformOrigin');
+	var _setTransformStyle = _createStyleSetter('transformStyle');
+
 	function _toggleControls(sel, show) {
 		var d = sel.data('freetrans');
 		
@@ -485,12 +493,12 @@
 
 			if(data._p.prev.angle != data.angle || data._p.prev.controls != data._p.controls) {
 				tstr = _matrixToCSS(Matrix().rotate(data._p.rad));
-				el.style[data._p.transcss] = tstr;
-				el.style[data._p.transorigcss] = data['rot-origin'];
+				_setTransform(el, tstr);
+				_setTransformOrigin(el, data['rot-origin']);
 
 				tstr = _matrixToCSS(Matrix().rotate(-data._p.rad));
-				data._p.divs.rotator[0].style[data._p.transcss] = tstr;
-				data._p.divs.rotator[0].style[data._p.transorigcss] = data['rot-origin'];
+				_setTransform(data._p.divs.rotator[0], tstr);
+				_setTransformOrigin(data._p.divs.rotator[0], data['rot-origin']);
 
 				data._p.prev.controls = data._p.controls;
 			}
@@ -499,8 +507,8 @@
 				
 			el.style.top = -20 + 'px';
 			el.style.left = data._p.cwid + 4 + 'px';
-			el.style[data._p.transcss] = tstr;
-			el.style[data._p.transorigcss] = data['rot-origin'];
+			_setTransform(el, tstr);
+			_setTransformOrigin(el, data['rot-origin']);
 		}
 		
 		el = data._p.dom;
@@ -533,7 +541,7 @@
 		}
 
 		if (data._p.prev.mat != tstr) {
-			el.style[data._p.transcss] = tstr;
+			_setTransform(el, tstr);
 			data._p.prev.mat = tstr;
 		}
 	}
