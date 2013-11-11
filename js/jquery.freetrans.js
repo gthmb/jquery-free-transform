@@ -85,6 +85,7 @@
 			scalex: 1,
 			scaley: 1, 
 			angle: 0,
+			maintainAspectRatio: false,
 			scaleLimit: 0.1,
 			'rot-origin': '50% 50%',
 			_p: {
@@ -314,7 +315,7 @@
 				if (scaleMe) {
 					scaleMe(Point(evt.pageX, evt.pageY));
 
-					if(evt.shiftKey) {
+					if(evt.shiftKey || settings.maintainAspectRatio) {
 						if(!handle.hasClass('ft-scaler-center')) {
 							data.scaley = ((owid*data.scalex)*(1/ratio))/ohgt;							
 							
