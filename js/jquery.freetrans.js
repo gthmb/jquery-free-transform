@@ -140,7 +140,7 @@
 		}
 
 		// translate (aka move)
-		container.bind('mousedown.freetrans', function(evt) {
+		container.bind('mousedown.freetrans', _ifLeft(function(evt) {
 			var data = sel.data('freetrans');
 			var p = Point(evt.pageX, evt.pageY);
 			var drag = function(evt) {
@@ -157,10 +157,10 @@
 			
 			$(document).bind('mousemove.freetrans', drag);
 			$(document).bind('mouseup.freetrans', up);
-		});
+		}));
 		
 		// rotate
-		rotator.bind('mousedown.freetrans', function(evt) {
+		rotator.bind('mousedown.freetrans', _ifLeft(function(evt) {
 			evt.stopPropagation();
 			
 			var data = sel.data('freetrans'),
@@ -187,10 +187,10 @@
 			
 			$(document).bind('mousemove.freetrans', drag);
 			$(document).bind('mouseup.freetrans', up);
-		});
+		}));
 		
 		// scale
-		container.find('.ft-scaler').bind('mousedown.freetrans', function(evt) {
+		container.find('.ft-scaler').bind('mousedown.freetrans', _ifLeft(function(evt) {
 			evt.stopPropagation();
 			
 			/**
@@ -350,11 +350,19 @@
 			
 			$(document).bind('mousemove.freetrans', drag);
 			$(document).bind('mouseup.freetrans', up);
-		});
+		}));
 
 		sel.css({position: 'absolute'});
 	}
-	
+
+	function _ifLeft(callback) {
+		return function(evt) {
+			if (evt.which === 1) {
+				return callback(evt);
+			}
+		};
+	};
+
 	function _destroy(sel) {
 		var data = sel.data('freetrans');
 		$(document).unbind('.freetrans');
