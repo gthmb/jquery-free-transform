@@ -440,9 +440,26 @@
 
                 data = $.extend(data, opts);
 
-                if(opts.angle) data._p.rad = data.angle*rad;
-                if(opts.scalex) data._p.cwid = data._p.wid * opts.scalex;
-                if(opts.scaley) data._p.chgt = data._p.hgt * opts.scaley;
+                if(opts.matrix){
+                    var nums = opts.matrix.match(/\d+/g);
+
+                    var props = _getPropsFromMatrix(Matrix(nums[0], nums[1], nums[2],
+                        nums[3], nums[4], nums[5]));
+
+                    data._p.rad = props.rad;
+                    data._p.cwid = data._p.wid * props.sx;
+                    data._p.chgt = data._p.hgt * props.sy;
+
+                    data.x = props.tx;
+                    data.y = props.ty;
+                    data.scalex = props.sx;
+                    data.scaley = props.sy;
+                    data.angle = props.rad/rad;
+                } else {
+                    if(opts.angle) data._p.rad = data.angle*rad;
+                    if(opts.scalex) data._p.cwid = data._p.wid * opts.scalex;
+                    if(opts.scaley) data._p.chgt = data._p.hgt * opts.scaley;
+                }
         }
         
         function _rotatePoint(pt, sin, cos) {
@@ -490,7 +507,22 @@
                 return "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.tx + "," + m.ty + ")";
         }
         
-        function _draw(sel, data) {                
+        function _getPropsFromMatrix(m) {
+            var obj = {
+                tx: Number(m.tx),
+                ty: Number(m.ty),
+                rad: Math.atan2(Number(m.b), Number(m.a)),
+                sx: Math.sqrt(m.a*m.a+m.b*m.b),
+                sy: Math.sqrt(m.c*m.c+m.d*m.d)
+            };
+
+            // if(m.a < 0) obj.sx = obj.sx*-1;
+            // if(m.d < 0) obj.sy = obj.sy*-1;
+
+            return obj;
+        }
+
+        function _draw(sel, data) {
                 if(!data)
                         return;
                 
