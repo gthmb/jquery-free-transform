@@ -441,7 +441,7 @@
                 data = $.extend(data, opts);
 
                 if(opts.matrix){
-                    var nums = opts.matrix.match(/\d+/g);
+                    var nums = opts.matrix.match(/\.?\d+/g);
 
                     var props = _getPropsFromMatrix(Matrix(nums[0], nums[1], nums[2],
                         nums[3], nums[4], nums[5]));
