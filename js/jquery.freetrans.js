@@ -439,7 +439,7 @@
                 delete opts._p;
 
                 data = $.extend(data, opts);
-
+                
                 if(opts.matrix){
                     var nums = opts.matrix.match(/\.?\d+/g);
 
@@ -456,9 +456,9 @@
                     data.scaley = props.sy;
                     data.angle = props.rad/rad;
                 } else {
-                    if(opts.angle) data._p.rad = data.angle*rad;
-                    if(opts.scalex) data._p.cwid = data._p.wid * opts.scalex;
-                    if(opts.scaley) data._p.chgt = data._p.hgt * opts.scaley;
+                    if(opts.hasOwnProperty('angle') && !isNaN(opts.angle)) data._p.rad = data.angle*rad;
+                    if(opts.hasOwnProperty('scalex') && !isNaN(opts.scalex)) data._p.cwid = data._p.wid * opts.scalex;
+                    if(opts.hasOwnProperty('scaley') && !isNaN(opts.scaley)) data._p.chgt = data._p.hgt * opts.scaley;
                 }
         }
         
