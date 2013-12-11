@@ -437,7 +437,7 @@
         function _createStyleSetter(prop) {
                 var prefixed;
                 if (vendorPrefix) {
-                        prefixed = vendorPrefix + prop[0].toUpperCase() + prop.substr(1);
+                        prefixed = vendorPrefix + prop.substr(0, 1).toUpperCase() + prop.substr(1);
                         return function (el, value) { el.style[prefixed] = el.style[prop] = value; };
                 }
                 return function (el, value) { el.style[prop] = value; };
