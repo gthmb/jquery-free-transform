@@ -64,6 +64,13 @@
                                 _destroy($(this));
                         });
                 },
+                getOptions :  function() {
+                        if(this.length > 1) {
+                                $.error('Method jQuery.freetrans.getOptions can only be called on single selectors!');
+                        }
+                        
+                        return _getOptions($(this));
+                },
                 
                 getBounds : function() {
                         if(this.length > 1) {
@@ -404,6 +411,21 @@
                 for(var el in data._p.divs) data._p.divs[el].unbind('.freetrans');
                 data._p.divs.container.replaceWith(sel);
                 sel.removeData('freetrans');
+        }
+
+        function _getOptions(sel) {
+            var data = sel.data('freetrans');
+            var opts = {
+                angle: data.angle,
+                maintainAspectRatio: data.maintainAspectRatio,
+                'rot-origin': data['rot-origin'],
+                scaleLimit: data.scaleLimit,
+                scalex: data.scalex,
+                scaley: data.scaley,
+                x: data.x,
+                y: data.y
+            };
+            return opts;
         }
         
         function _getBounds(sel) {

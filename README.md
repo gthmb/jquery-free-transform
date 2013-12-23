@@ -90,6 +90,14 @@ You can retrieve the bounding box of the transformed selector by passing `'getBo
 	var b = $('mydiv').getBounds();
 	console.log(b.xmin, b.ymax, b.height, b.center.x);
 
+##### Getting the current options 
+
+You can retrieve the current options of the transformed selector by passing
+`'getOptions'` which is useful for persistence. This method is only available for single selectors, not groups. It returns an object with the bounds information. This method is not chainable.
+
+	var o = $('mydiv').freetrans('getOptions');
+	console.log(o.angle, o.maintainAspectRatio, o['rot-origin'], o.scaleLimit, o.scalex, o.scaley, o.x, o.y);
+
 ##### Destroying the plugin
 If you want to remove the freetrans functionality from a selector, you can pass `'destroy'`. It will unbind any events, and destroy the `$.data('freetrans')` object. 
 
