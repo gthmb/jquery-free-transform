@@ -87,7 +87,7 @@ You can show and hide the controls by passing `'controls'` to the plugin folloed
 
 You can retrieve the bounding box of the transformed selector by passing `'getBounds'`. This method is only available for single selectors, not groups. It returns an object with the bounds information. This method is not chainable.
 
-	var b = $('mydiv').getBounds();
+	var b = $('mydiv').freetrans('getBounds');
 	console.log(b.xmin, b.ymax, b.height, b.center.x);
 
 ##### Getting the current options 
