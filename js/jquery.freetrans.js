@@ -1,5 +1,5 @@
 /**
-* Matrix.js v1.0
+* jquery-freetrans.js v1.0
 * 
 * Copyright (c) 2013 Jonathan Greene (gthmb)
 *
