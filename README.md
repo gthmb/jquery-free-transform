@@ -86,6 +86,35 @@ You can show and hide the controls by passing `'controls'` to the plugin, option
 
 
 
+##### Showing/Hiding the Scale
+
+You can show and hide the scale by passing `'scale'` to the plugin, optionally followed by a boolean to either show or hide the scale.
+
+	// hide the scale
+	$('mydiv').freetrans('scale', false);
+
+	// show the scale
+	$('mydiv').freetrans('scale', true);
+
+        // toggle the scale
+        $('mydiv').freetrans('scale');
+
+
+##### Showing/Hiding the Rotate
+
+You can show and hide the rotate by passing `'rotator'` to the plugin, optionally followed by a boolean to either show or hide the rotator.
+
+	// hide the rotator
+	$('mydiv').freetrans('rotator', false);
+
+	// show the rotator
+	$('mydiv').freetrans('rotator', true);
+
+        // toggle the rotator
+        $('mydiv').freetrans('rotator');
+
+
+
 ##### Getting the bounding box
 
 You can retrieve the bounding box of the transformed selector by passing `'getBounds'`. This method is only available for single selectors, not groups. It returns an object with the bounds information. This method is not chainable.
