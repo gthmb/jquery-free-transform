@@ -144,6 +144,10 @@ While scaling, holding down the Shift key will maintain the aspect ratio of the 
 
 While rotating, the Shift key causes the rotation to snap to 15 degree increments.
 
+##### The ALT key
+
+While scaling, holding down the Alt key will scale div relative to its center.
+
 ##### Chainability
 
 This plugin keeps chainability in tact. Chain away!
