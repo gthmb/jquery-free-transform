@@ -6,7 +6,7 @@ Provides simple controls that allows you to move/rotate/scale a div. Kind of lik
 [example page](http://jsfiddle.net/66Bna/293/)
 
 Dependencies:
-  - jQuery - tested with 1.7.2
+  - jQuery - tested with 1.11.2
   - [Matrix.js](https://github.com/STRd6/matrix.js "awesome and simple Matrix lib from STRd6") - awesome and simple Matrix lib from STRd6
 
 TODOs:
@@ -14,7 +14,7 @@ TODOs:
 
 ### API
 
-The `$.freetrans()` method is used for all access to the plugin. 
+The `$.freetrans()` method is used for all access to the plugin.
 
 ##### Initialization
 When called without any parameters, the plugin will be initiailized for the selector(s)
@@ -122,7 +122,7 @@ You can retrieve the bounding box of the transformed selector by passing `'getBo
 	var b = $('mydiv').freetrans('getBounds');
 	console.log(b.xmin, b.ymax, b.height, b.center.x);
 
-##### Getting the current options 
+##### Getting the current options
 
 You can retrieve the current options of the transformed selector by passing
 `'getOptions'` which is useful for persistence. This method is only available for single selectors, not groups. It returns an object with the bounds information. This method is not chainable.
@@ -131,7 +131,7 @@ You can retrieve the current options of the transformed selector by passing
 	console.log(o.angle, o.maintainAspectRatio, o['rot-origin'], o.scaleLimit, o.scalex, o.scaley, o.x, o.y);
 
 ##### Destroying the plugin
-If you want to remove the freetrans functionality from a selector, you can pass `'destroy'`. It will unbind any events, and destroy the `$.data('freetrans')` object. 
+If you want to remove the freetrans functionality from a selector, you can pass `'destroy'`. It will unbind any events, and destroy the `$.data('freetrans')` object.
 
 	// destroy plugin for mydiv
 	$('mydiv').freetrans('destroy');
