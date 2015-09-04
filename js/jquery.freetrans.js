@@ -141,6 +141,7 @@
                 markup +=                         '<div class="ft-scaler ft-scaler-bottom ft-scaler-center ft-scaler-bc"></div>';
                 markup +=                         '<div class="ft-scaler ft-scaler-mid ft-scaler-left ft-scaler-ml"></div>';
                 markup +=                         '<div class="ft-scaler ft-scaler-mid ft-scaler-right ft-scaler-mr"></div>';
+                markup +=                         '<div class="ft-scaler ft-scaler-mid ft-scaler-center ft-scaler-mc"></div>';
                 markup +=                 '</div>';
 
                 var settings = {
@@ -180,6 +181,7 @@
                 var bc = settings._p.divs.bc = container.find('.ft-scaler-bc');
                 var ml = settings._p.divs.ml = container.find('.ft-scaler-ml');
                 var mr = settings._p.divs.mr = container.find('.ft-scaler-mr');
+                var mc = settings._p.divs.mc = container.find('.ft-scaler-mc');
                 settings._p.divs.container = container;
                 settings._p.cwid = controls.width();
                 settings._p.chgt = controls.height();
@@ -269,6 +271,7 @@
                         bc_off = bc.offset(),
                         ml_off = ml.offset(),
                         mr_off = mr.offset(),
+                        c_off  = mc.offset(),
                         refang = Math.atan2(tr_off.top - tl_off.top, tr_off.left - tl_off.left),
                         sin = Math.sin(refang),
                         cos = Math.cos(refang);
@@ -294,7 +297,7 @@
                                 positionMe = function() {
                                         doPosition(anchor, container.find('.ft-scaler-tl').offset());
                                 };
-
+                                
                         } else if (handle.is(tl) || handle.is(ml)) {
                                 anchor = br_off;
                                 doy = handle.is(tl);
@@ -353,6 +356,53 @@
                         }
 
                         var drag = _noSelect(function(evt) {
+
+                                if(evt.altKey) {
+                                        anchor = c_off;
+
+                                        if (handle.is(br) || handle.is(mr)) {
+                                                scaleMe = function(mp) {
+                                                        mp.x = (mp.x - anchor.left)*2;
+                                                        mp.y = (mp.y - anchor.top)*2;
+                                                        mp = _rotatePoint(mp, sin, cos);
+
+                                                        data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+                                                        if (doy) data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
+                                                };
+                                        } else if (handle.is(tl) || handle.is(ml)) {
+                                                scaleMe = function(mp) {
+                                                        mp.x = (anchor.left - mp.x)*2;
+                                                        mp.y = (anchor.top - mp.y)*2;
+                                                        mp = _rotatePoint(mp, sin, cos);
+
+                                                        data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+                                                        if (doy) data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
+                                                };
+
+                                        } else if (handle.is(tr) || handle.is(tc)) {
+                                                scaleMe = function(mp) {
+                                                        mp.x = (mp.x - anchor.left)*2;
+                                                        mp.y = (anchor.top - mp.y)*2;
+                                                        mp = _rotatePoint(mp, sin, cos);
+
+                                                        if (dox) data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+                                                        data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
+                                                };
+
+                                        } else if (handle.is(bl) || handle.is(bc)) {
+                                                scaleMe = function(mp) {
+                                                        mp.x = (anchor.left - mp.x)*2;
+                                                        mp.y = (mp.y - anchor.top)*2;
+                                                        mp = _rotatePoint(mp, sin, cos);
+                                                        if (dox) data.scalex = (mp.x / owid) > scaleLimit ? (mp.x / owid) : scaleLimit;
+                                                        data.scaley = (mp.y / ohgt) > scaleLimit ? (mp.y / ohgt) : scaleLimit;
+                                                };
+                                        }
+
+                                        positionMe = function() {
+                                            doPosition(anchor, container.find('.ft-scaler-mc').offset());
+                                        };
+                                }
 
                                 if (scaleMe) {
                                         scaleMe(Point(evt.pageX, evt.pageY));

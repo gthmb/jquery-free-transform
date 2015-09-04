@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="../css/jquery.freetrans.css">
-		
+
 		<style>
 			body{
 				user-select: none;
@@ -23,8 +23,8 @@
 				border: 1px solid red;
 			}
 		</style>
-		
-		<script src="../js/jquery-1.7.2.js"></script>
+
+		<script src="../js/jquery-1.11.2.js"></script>
 		<script src="../js/Matrix.js"></script>
 		<script src="../js/jquery.freetrans.js"></script>
 	</head>
@@ -37,16 +37,16 @@
 		$(function(){
 			// do a selector group
 			$('.trans').freetrans({
-				x: 50, 
+				x: 50,
 				y: 50
 			});
-			
+
 			//updating options, chainable
 			$('#two').freetrans({
-				x: 200, 
-				y: 100, 
+				x: 200,
+				y: 100,
 				angle: 45,
-				'rot-origin': "50% 100%"  
+				'rot-origin': "50% 100%"
 			})
 			.css({border: "1px solid pink"})
 

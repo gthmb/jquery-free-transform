@@ -53,3 +53,7 @@
     height: 16px;
     background-image: url('./rotate_ccw.png');
 }
+
+.ft-scaler-mid.ft-scaler-center {
+    visibility: hidden;
+}
